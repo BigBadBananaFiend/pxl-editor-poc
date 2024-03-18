@@ -1,6 +1,5 @@
-const root = document.querySelector('#root')
+import { appInit } from './app-init'
 
-const headline = document.createElement('h1')
-headline.innerText = 'Hello world!'
+export * from './components'
 
-root?.appendChild(headline)
+appInit()

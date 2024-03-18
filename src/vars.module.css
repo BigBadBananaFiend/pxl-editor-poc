@@ -1,0 +1,6 @@
+:root {
+    --spacing-common: 20px;
+    --border-radius: 12px;
+
+    --color-light-grey: rgba(99, 99, 99, 0.2);
+}

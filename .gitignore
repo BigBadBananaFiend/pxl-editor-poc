@@ -2,5 +2,5 @@ node_modules
 
 # bundle
 dist/*
-!dist/*.html
-!dist/*.css
+!dist/index.html
+!dist/global.css

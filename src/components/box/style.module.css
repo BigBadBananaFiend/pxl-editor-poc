@@ -1,0 +1,35 @@
+@import '../../vars.module.css';
+
+.sidebar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 150px;
+    height: 100px;
+    padding: var(--spacing-common);
+    gap: 12px;
+
+}
+
+.editor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-common);
+    gap: 12px;
+
+}
+
+.vertical {
+    flex-direction: column;
+}
+
+.horizontal {
+    flex-direction: row;
+}
