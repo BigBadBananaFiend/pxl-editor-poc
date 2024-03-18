@@ -25,16 +25,17 @@ export class EditorBox extends DragDropElement {
     super(handleDrop)
 
     this.classList.add(style.editor, style[`${this.orientation}`])
-    this.textContent = `${id++}`
     this.id = `${v4()}`
+    this.textContent = `${id++} ${this.id}`
   }
 
   connectedCallback(): void {
     super.connectedCallback?.()
 
-    this.addEventListener('click', () => {
-      const prev = this.orientation
+    this.addEventListener('click', (event) => {
+      event.stopPropagation()
 
+      const prev = this.orientation
       if (prev === 'horizontal') {
         this.orientation = 'vertical'
       } else {

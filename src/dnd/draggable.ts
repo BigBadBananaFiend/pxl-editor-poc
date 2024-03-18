@@ -1,15 +1,10 @@
 import { DragAttributes, DragEventType, EventListeners } from './types'
-import style from './style.module.css'
 
 type Constructor<T = {}> = new (...args: any[]) => T
 
 export function DraggableMixin<C extends Constructor<HTMLElement>>(Base: C) {
   return class extends Base {
     public dragListeners: Array<EventListeners>
-
-    public orientation: 'vertical' | 'horizontal' = 'vertical'
-
-    static observedAttributes: string[] = [DragAttributes.IsClosest]
 
     constructor(...args: any[]) {
       super(...args)
@@ -47,19 +42,6 @@ export function DraggableMixin<C extends Constructor<HTMLElement>>(Base: C) {
 
       for (const listener of this.dragListeners) {
         this.removeEventListener(listener.eventType, listener.callback)
-      }
-    }
-
-    attributeChangedCallback(attributeName: string, oldValue: string, newValue: string): void {
-      super.attributeChangedCallback?.(attributeName, oldValue, newValue)
-
-      if (attributeName === DragAttributes.IsClosest) {
-        if (!newValue) {
-          this.classList.remove(this.orientation === 'vertical' ? style.closest : style['closest-h'])
-        } else {
-          console.log(this.orientation, 'DEBUG')
-          this.classList.add(this.orientation === 'vertical' ? style.closest : style['closest-h'])
-        }
       }
     }
   }

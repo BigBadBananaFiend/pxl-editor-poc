@@ -3,14 +3,14 @@
     outline-offset: -12px !important;
 }
 
-.closest {
+.vertical {
     border-top-left-radius: 0px !important;
     border-top-right-radius: 0px !important;
     border-top: 4px dotted red;
     border-top-width: thick;
 }
 
-.closest-h {
+.horizontal {
     border-top-left-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
     border-left: 4px dotted red;

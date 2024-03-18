@@ -1,4 +1,3 @@
-import { DraggableElement } from './draggable'
 import style from './style.module.css'
 import { DragAttributes, DragEventType, EventListeners } from './types'
 
@@ -7,7 +6,8 @@ export class DroppableElement extends HTMLElement {
 
   protected closestElement: Element | undefined = undefined
 
-  static observedAttributes: string[] = [DragAttributes.DragOver]
+  static observedAttributes: string[] = [DragAttributes.DragOver, DragAttributes.IsClosest]
+  public orientation: 'vertical' | 'horizontal' = 'vertical'
 
   constructor(dropCallback: (event: DragEvent) => Element | void) {
     super()
@@ -20,11 +20,7 @@ export class DroppableElement extends HTMLElement {
           event.preventDefault()
 
           this.clearPrevClosest()
-          this.closestElement = this.getClosestElement(
-            event.clientX,
-            event.clientY,
-            (this.closestElement as DraggableElement).orientation
-          )
+          this.closestElement = this.getClosestElement(event.clientX, event.clientY, this.orientation)
 
           this.closestElement?.setAttribute(DragAttributes.IsClosest, 'true')
 
@@ -74,24 +70,35 @@ export class DroppableElement extends HTMLElement {
   private getClosestElement(x: number, y: number, orientation: 'vertical' | 'horizontal') {
     const elements = [...this.querySelectorAll(`[${DragAttributes.Draggable}="true"]`)]
 
+    // basically like iterate all elements and like...
+    // check if mouse position x/y is close to left/top of another element based on orientation
+    // and then like push it before the element or like... after
     return elements.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect()
-        let offset = 0
 
-        if (orientation === 'vertical') {
-          offset = y - box.top - box.height / 2
+        if (this.orientation === 'horizontal') {
+          const offset = x - box.left - box.width / 2
+
+          if (offset < 0 && offset > closest.offset) {
+            return { offset, element: child }
+          }
+
+          return closest
         } else {
-          offset = x - box.left - box.width / 2
-        }
+          const offset = y - box.top - box.height / 2
 
-        if (offset < 0 && offset > closest.offset) {
-          return { offset, element: child }
-        }
+          if (offset < 0 && offset > closest.offset) {
+            return { offset, element: child }
+          }
 
-        return closest
+          return closest
+        }
       },
-      { offset: Number.NEGATIVE_INFINITY, element: undefined } as { offset: number; element: Element | undefined }
+      {
+        offset: Number.NEGATIVE_INFINITY,
+        element: undefined
+      } as { offset: number; element: Element | undefined }
     ).element
   }
 
@@ -108,11 +115,26 @@ export class DroppableElement extends HTMLElement {
   }
 
   attributeChangedCallback(attributeName: string, oldValue: string, newValue: string): void {
+    super.attributeChangedCallback?.(attributeName, oldValue, newValue)
+
     if (attributeName === DragAttributes.DragOver) {
       if (!newValue) {
         this.classList.remove(style.over)
       } else {
         this.classList.add(style.over)
+      }
+    }
+
+    /* yeah... well... */
+    if (attributeName === DragAttributes.IsClosest) {
+      if (!newValue) {
+        this.classList.remove(
+          (this.parentElement as typeof this).orientation === 'vertical' ? style.vertical : style.horizontal
+        )
+      } else {
+        this.classList.add(
+          (this.parentElement as typeof this).orientation === 'vertical' ? style.vertical : style.horizontal
+        )
       }
     }
   }
